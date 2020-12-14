@@ -20,9 +20,7 @@ function InsertBox({ saveTodo }) {
       <button
         className="btn btn-primary"
         onClick={() => {
-
           saveTodo(text)
-
         }}
       >
         Add
@@ -58,24 +56,14 @@ function ToDoItem({ content, deleteTodo }) {
 }
 
 function App() {
-
   const [todoList, setTodoList] = useState([])
 
-  //
   useEffect(() => {
-
     async function fetchData() {
-      const todo = await getTodoList()
+      const todo = await getTodoListFromApi()
       setTodoList(todo)
     }
-
     fetchData()
-    //  .then(res => {
-    //    setTodoList(res)
-    //  })
-    // console.log("test")
-    // console.log(test)
-
   }, [])
 
   const deleteTodo = async (id) => {
@@ -84,6 +72,7 @@ function App() {
       setTodoList(todoList.filter(i => i.id !== id))
     }
     catch (e) {
+      console.log("cannot delete", e)
       alert("cannot delete")
     }
   }
@@ -95,6 +84,7 @@ function App() {
       setTodoList([...todoList, newData])
     }
     catch (e) {
+      console.log("cannot save", e)
       alert("cannot save")
     }
   }
@@ -106,10 +96,16 @@ function App() {
   );
 }
 
-async function getTodoList() {
-  const response = await axios.get('http://localhost:3001/todo-list')
-  const result = response.data;
-  return result;
+async function getTodoListFromApi() {
+  try {
+    const response = await axios.get('http://localhost:3001/todo-list')
+    return response.data;
+  }
+  catch (e) {
+    console.log("cannot get", e)
+    alert("cannot get")
+    return [];
+  }
 };
 
 export default App;
