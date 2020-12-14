@@ -11,17 +11,16 @@ const slice = createSlice({
         },
         deleteTodo: {
             reducer: (state, action) => {
-                const index = state.map(x => x.id).indexOf(action.payload)
+                const index = state.map(i => i.id).indexOf(action.payload)
                 state.splice(index, 1)
             }
         },
         markAsDone: {
             reducer: (state, action) => {
-                state.forEach(todo => {
-                    if (todo.id === action.payload) {
-                        todo.is_done = true
-                    }
-                })
+                const index = state.map(i => i.id).indexOf(action.payload)
+                if (index !== -1) {
+                    state[index].is_done = true
+                }
             }
         }
     }
