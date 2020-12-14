@@ -1,8 +1,23 @@
 {
   "todo-list": [
     {
-      "id": 1607676303943,
-      "text": "234",
+      "id": 1607935331347,
+      "text": "redux toolkit",
+      "is_done": true
+    },
+    {
+      "id": 1607935362689,
+      "text": "css flex",
+      "is_done": false
+    },
+    {
+      "id": 1607935368633,
+      "text": "hello world",
+      "is_done": true
+    },
+    {
+      "id": 1607935667477,
+      "text": "isms test",
       "is_done": false
     }
   ]

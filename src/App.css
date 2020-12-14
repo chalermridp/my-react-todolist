@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+span[data-is-done=true] {
+    color: gray;
+    text-decoration: line-through;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
