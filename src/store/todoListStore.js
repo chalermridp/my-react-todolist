@@ -49,6 +49,7 @@ const slice = createSlice({
         [deleteTodoAsyncThunk.fulfilled]: (state, action) => {
             const index = state.map(i => i.id).indexOf(action.payload)
             state.splice(index, 1)
+            return state
         },
         [updateTodoAsyncThunk.fulfilled]: (state, action) => {
             const { id, text, is_done } = action.payload
@@ -57,6 +58,7 @@ const slice = createSlice({
                 existingTodo.text = text
                 existingTodo.is_done = is_done;
             }
+            return state
         }
     }
 })
