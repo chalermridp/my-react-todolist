@@ -2,10 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
-import axios from 'axios';
-import { useDispatch } from 'react-redux'
-import slice from './store/todoListStore'
-import { useSelector } from 'react-redux'
+import { getTodoListAsyncThunk, createTodoAsyncThunk, deleteTodoAsyncThunk, updateTodoAsyncThunk } from './store/todoListStore'
+import { useDispatch, useSelector } from 'react-redux'
 
 function InsertBox({ createTodo }) {
   const [text, setText] = useState("")
@@ -31,14 +29,14 @@ function InsertBox({ createTodo }) {
   )
 }
 
-function ToDoList({ todoList, markAsDone, deleteTodo }) {
+function ToDoList({ todoList, updateTodo, deleteTodo }) {
   return (
     <div>
       <hr />
       {
-        todoList.map((value) => {
+        todoList.map((value, i) => {
           return (
-            <ToDoItem content={value} markAsDone={markAsDone} deleteTodo={deleteTodo} key={value.id} />
+            <ToDoItem content={value} updateTodo={updateTodo} deleteTodo={deleteTodo} key={i} />
           )
         })
       }
@@ -46,13 +44,13 @@ function ToDoList({ todoList, markAsDone, deleteTodo }) {
   )
 }
 
-function ToDoItem({ content, markAsDone, deleteTodo }) {
+function ToDoItem({ content, updateTodo, deleteTodo }) {
   return (
     <div className="form-group">
       <span data-is-done={content.is_done}>{content.text}</span>
       &nbsp;
       <button className="btn btn-sm btn-success" onClick={() => {
-        markAsDone(content.id)
+        updateTodo({ id: content.id, text: content.text, is_done: true })
       }} disabled={content.is_done}>mark as done</button>
       &nbsp;
       <button className="btn btn-sm btn-danger" onClick={() => {
@@ -67,17 +65,12 @@ function App() {
   let todoList = useSelector(state => state.todoList)
 
   useEffect(() => {
-    async function fetchData() {
-      const todoListFromApi = await getTodoListFromApi()
-      todoListFromApi.forEach(todo => dispatch(slice.actions.createTodo(todo)))
-    }
-    fetchData()
+    dispatch(getTodoListAsyncThunk())
   }, [])
 
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/todo-list/${id}`)
-      dispatch(slice.actions.deleteTodo(id))
+      await dispatch(deleteTodoAsyncThunk(id))
     }
     catch (e) {
       console.log("cannot delete", e)
@@ -85,46 +78,33 @@ function App() {
     }
   }
 
-  const markAsDone = async (id) => {
+  const updateTodo = async (data) => {
     try {
-      await axios.patch(`http://localhost:3001/todo-list/${id}`, { is_done: true })
-      dispatch(slice.actions.markAsDone(id))
+      await dispatch(updateTodoAsyncThunk(data))
     }
     catch (e) {
-      console.log("cannot delete", e)
-      alert("cannot delete")
+      console.log("cannot update", e)
+      alert("cannot update")
     }
   }
 
   const createTodo = async (text) => {
-    const newData = { id: Date.now(), text: text, is_done: false }
     try {
-      await axios.post('http://localhost:3001/todo-list', newData)
-      dispatch(slice.actions.createTodo(newData))
+      const newData = { id: Date.now(), text: text, is_done: false }
+      await dispatch(createTodoAsyncThunk(newData))
     }
     catch (e) {
-      console.log("cannot save", e)
-      alert("cannot save")
+      console.log("cannot create", e)
+      alert("cannot create")
     }
   }
+
   return (
     <Container>
       <InsertBox todoList={todoList} createTodo={createTodo} />
-      <ToDoList todoList={todoList} markAsDone={markAsDone} deleteTodo={deleteTodo} />
+      <ToDoList todoList={todoList} updateTodo={updateTodo} deleteTodo={deleteTodo} />
     </Container>
   );
 }
-
-async function getTodoListFromApi() {
-  try {
-    const response = await axios.get('http://localhost:3001/todo-list')
-    return response.data;
-  }
-  catch (e) {
-    console.log("cannot get", e)
-    alert("cannot get")
-    return [];
-  }
-};
 
 export default App;
