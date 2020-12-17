@@ -8,7 +8,7 @@
     {
       "id": 1607935362689,
       "text": "css flex",
-      "is_done": false
+      "is_done": true
     },
     {
       "id": 1607935368633,
@@ -28,6 +28,11 @@
     {
       "id": 1608181735918,
       "text": "test",
+      "is_done": true
+    },
+    {
+      "id": 1608184653084,
+      "text": "xxx",
       "is_done": true
     }
   ]
